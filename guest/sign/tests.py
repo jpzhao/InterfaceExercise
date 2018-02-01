@@ -1,37 +1,24 @@
-import unittest
-from exercise.count import Calculator
+from django.test import TestCase
+from sign.models import Event,Guest
 # Create your tests here.
-class CountTest(unittest.TestCase):
+
+class ModelTest(TestCase):
 	def setUp(self):
-		self.cal=Calculator(8, 4)
+		Event.objects.create(id=1,name="oneplus 3 event",status=True,limit=2000,
+		                     address='shezhen',start_time='2018-08-31 02:18:22')
 
-	def tearDown(self):
-		pass
+		Guest.objects.create(id=1,event_id=1,realname='alen',
+		                     phone='13312312311',email='alen@mail.com',sign=False)
 
-	def test_add(self):
-		result=self.cal.add()
-		self.assertEqual(result,12)
+	def test_event_models(self):
+		result=Event.objects.get(name="oneplus 3 event")
+		self.assertEqual(result.address,"shenzhen")
+		self.assertTrue(result.status)
 
-	def test_sub(self):
-		result=self.cal.sub()
-		self.assertEqual(result,4)
+	def test_guest_models(self):
+		result=Guest.objects.get(phone='13312312311')
+		self.assertEqual(result.realname,"alen")
+		self.assertFalse(result.sign)
 
-	def test_mul(self):
-		result=self.cal.mul()
-		self.assertEqual(result,32)
 
-	def test_div(self):
-		result=self.cal.div()
-		self.assertEqual(result,2)
 
-if __name__ == "__main__":
-	#unittest.main()
-    #构造测试集
-	suite=unittest.TestSuite()
-	suite.addTest(CountTest("test_add"))
-	suite.addTest(CountTest("test_sub"))
-	suite.addTest(CountTest("test_mul"))
-	suite.addTest(CountTest("test_div"))
-
-	runner=unittest.TextTestRunner()
-	runner.run(suite)
