@@ -25,15 +25,14 @@ class CountTest(unittest.TestCase):
 		result=self.cal.div()
 		self.assertEqual(result,2)
 
-if __name__ =="__main__":
+if __name__ == "__main__":
 	#unittest.main()
     #构造测试集
-
-    suite=unittest.TestSuite()
+	suite=unittest.TestSuite()
 	suite.addTest(CountTest("test_add"))
 	suite.addTest(CountTest("test_sub"))
 	suite.addTest(CountTest("test_mul"))
 	suite.addTest(CountTest("test_div"))
 
-	runner=unittest.TestTestRunner()
+	runner=unittest.TextTestRunner()
 	runner.run(suite)
