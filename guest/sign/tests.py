@@ -1,10 +1,9 @@
-from django.test import TestCase
 import unittest
-from exercise import Calculator
+from exercise.count import Calculator
 # Create your tests here.
 class CountTest(unittest.TestCase):
 	def setUp(self):
-		self.cal=Calculator(8,4)
+		self.cal=Calculator(8, 4)
 
 	def tearDown(self):
 		pass

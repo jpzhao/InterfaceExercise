@@ -24,5 +24,5 @@ class Calculator():
 	def div(self):
 		return self.a/self.b
 
-test=Calculator(5,3)
-print(test)
+# test=Calculator(5,3)
+# print(test)
