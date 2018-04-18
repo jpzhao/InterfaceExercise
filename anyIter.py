@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: UTF-8 -*-
 class AnyIter(object):
     def __init__(self,data,safe=False):
         self.safe=safe
