@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: UTF-8 -*-
 from time import time,ctime
 class TimedWrapMe(object):
     def __init__(self,obj):
