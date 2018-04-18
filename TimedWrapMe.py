@@ -11,7 +11,7 @@ class TimedWrapMe(object):
     def gettimeval(self,t_type):
         if not isinstance(t_type,str) or t_type[0] not in 'cma':
             raise TypeError("argument of 'c' 'm',or 'a' req'd")
-        return getattr(self,'_%s__stime'%(self.__class__.__name__,t_type([0])))
+        return getattr(self,'_%s__%stime'%(self.__class__.__name__,t_type[0]))
 
     def gettimestr(self,t_type):
         return ctime(self.gettimeval(t_type))
@@ -31,3 +31,6 @@ class TimedWrapMe(object):
     def __getattr__(self,attr):
         self.__atime=time()
         return getattr(self.__data,attr)
+
+myTime=TimedWrapMe(932)
+print(myTime.gettimeval('a'))
