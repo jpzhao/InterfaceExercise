@@ -1,3 +1,5 @@
+from memory_profiler import profile
+
 class WrapMe(object):
     def __init__(self,obj):
         self.__data=obj
@@ -11,6 +13,7 @@ class WrapMe(object):
     def __str__(self):
         return str(self.__data)
 
+    @profile
     def __getattr__(self, attr):
         return getattr(self.__data,attr)
 

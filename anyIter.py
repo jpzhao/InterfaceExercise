@@ -21,7 +21,6 @@ class AnyIter(object):
         return retval
 
 a=AnyIter(range(2))
-gdb(a)
 for j in range(1,5):
     print (j, ":" ,a.__next__(j))
 
