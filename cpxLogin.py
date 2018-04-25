@@ -72,7 +72,7 @@ def login(phone,password):
     r =post('.chupinxiu.com/app/user/login',data,'token')
     return r
 
-tokenlogin=json.loads(login(15910766104,'qqqqqq').text)['data']['token']
+tokenlogin=json.loads(login('','').text)['data']['token']
 
 
 def cpxSystem():
