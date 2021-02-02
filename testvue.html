@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <div id="app">
+        {{ message.split('').reverse().join('')}}
+        <div>
+            {{ name + '-hello world'}}
+        </div>
+        <div>
+            {{ todo }}
+        </div>
+        <h3>现在忙不忙？</h3>
+        <p>{{ isBusy ? "Yes" : "No" }}</p>
+        <div>
+            用v-html显示
+            <span v-html="myHtml"></span>
+        </div>
+    </div>
+    <script src="vue.js"></script>
+    <script src="start.js"></script>
+</body>
+</html>
