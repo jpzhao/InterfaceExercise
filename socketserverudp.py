@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-import socketserver
+import socketserver_test
 
-class MyRequestHanlde(socketserver.BaseRequestHandler):
+class MyRequestHanlde(socketserver_test.BaseRequestHandler):
     def handle(self):
         client_data=self.request[0]
         server=self.request[1]
@@ -9,5 +9,5 @@ class MyRequestHanlde(socketserver.BaseRequestHandler):
         print('客户端发来的数据%s'%client_data)
         server.sendto(client_data.upper(),client_address)
 
-s=socketserver.ThreadingUDPServer(('127.0.0.1',9999),MyRequestHanlde)
+s=socketserver_test.ThreadingUDPServer(('127.0.0.1', 9999), MyRequestHanlde)
 s.serve_forever()
