@@ -323,9 +323,20 @@ utf-8:
     3.python解释器默认读文件的编码
        python3默认:utf-8
        python2默认:ASCII
-       指定文件头修改默认的编码
+    4.指定文件头修改默认的编码
        #coding:utf-8
-p155
+    5.python3的str类型默认直接存成unicode格式，不会乱码
+      保证python2的str类型不乱码
+      x=u'上'
+    6.python2解释器有两种字符串类型：str,unicode
+    str类型
+    x='上' 字符串值会按照文件头指定的编码格式存入变量值的内存空间
+    unicode类型
+    x=u'上'强制存成unicode
+
+P158
+
+
 
 1、什么是内置方法
 定义在类内部，以__开头并以__结尾的方法
