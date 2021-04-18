@@ -333,10 +333,157 @@ utf-8:
     x='上' 字符串值会按照文件头指定的编码格式存入变量值的内存空间
     unicode类型
     x=u'上'强制存成unicode
+编码和解码
+x=‘上’
+res=x.encode('gbk') #unicode--->gbk 编码
+print(res)
+print(res.decode('gbk')) 解码
 
-P158
+文件
+1什么是文件
+    文件是操作系统提供给用户/应用程序操作硬盘的一种概念/接口
+    用户/应用程序(f=open(),获得文件对象/文件句柄)
+    操作系统（文件）
+    计算机硬件（硬盘）
+为何要用文件
+    用户/应用程序可以通过文件将数据永久保存在硬盘中
+    即操作文件就是操作硬盘
+    用户/应用程序直接操作的是文件，对文件进行的所有操作，都是
+    向操作系统发送系统调用，然后再由操作系统将其转换成具体的硬盘操作
+如何用文件：open()
+    控制文件读写内容的模式:t和b
+        强调：t和b不能单独使用，必须跟r/w/a联用
+        t文本（默认的模式）
+            1.读写都以str(unicode)为单位的
+            2.文本文件
+            3.必须指定encoding='utf-8'
+              没有指定encoding参数操作系统会使用自己默认的编码
+              linux系统默认utf-8
+              window系统默认gbk
+            with open('c.txt',mode='rt') as f:
+                res=f.read() t模式会将f.read()读出的结果解码成unicode
+                             读出硬盘的二进制(gbk)->t控制将二进制转换unicode->字符
+            内存：utf-8格式二进制--》解码---》unicode
+            硬盘：（c.txt内容：utf-8格式的二进制）
+        b二进制/bytes
+    控制文件读写操作的模式
+        r只读模式
+            当文件不存在时报错，当文件存在时文件指针跳到开始位置
+            with open('d.txt'，mode='rt',encoding='utf-8) as f:
+                res=f.read() #read把所有内容从硬盘读入内存
+        w只写模式
+            当文件不存在时会创建空文件，当文件存在时会清空文件，指针位于开始位置
+            强调1：在以w模式打开文件没有关闭的情况下，连续写入，新的内容总是跟在旧的之后
+            强调2：如果重新以w模式打开文件，则会清空文件内容
+        a只追加写模式
+            当文件不存在时会创建空文档，在文件存在时文件指针会直接调到末尾
+            强调 w 模式与 a 模式的异同：
+            1 相同点：在打开的文件不关闭的情况下，连续的写入，新写的内容总会跟在前写的内容之后
+            2 不同点：以 a 模式重新打开文件，不会清空原文件内容，会将文件指针直接移动到文件末尾，新写的内容永远写在最后
+        了解+：r+、w+、a+
+        with open('g.txt',mode='rt+',encoding='utf-8')as f:
+            print(f.read())
+            f.write('chiness')
+        with open('g.txt',mode='w+t',encoding='utf-8')as f:
+            f.write('111\n')
+            f.write('222\n')
+            f.write('333\n')
+            print('=========>',f.read())
+        with open('g.txt',mode='a+t',encoding='utf-8')as f:
+            f.write('444\n')
+            f.write('555\n')
+            print('========>',f.read())
+        x模式（控制文件操作的模式）-
+            x，只写模式【不可读，不存在则创建，存在则报错】
+        with open('c.txt',mode='x',encoding='utf-8') as f:
+            f.write('哈哈哈\n')
+        控制文件读写内容的模式
+        t:
+            1读写都是以字符串(unicode)为单位
+            2只能针对文本文件
+            3必须指定字符编码
+            硬盘的二进制读入内存->t模式会将读入内存的内容进行decode解码
+        b:binary模式
+            1.读写都是以bytes为单位
+            2.可以针对所有文件
+            3.一定不能指定字符编码
+            硬盘的二进制读入内存->b模式下，不做任何转换，直接读入内存
+            bytes类型->当成二进制
+        #强调：b模式对比t模式
+        1、在操作纯文本文件方面t模式帮我们省去了编码与解码的环节，b模式则需要手动编码与解码，所以此时t模式更为方便
+        2、针对非文本文件（如图片、视频、音频等）只能使用b模式
+        with open(r'e.txt',mode='wb') as f:
+            f.write('你好hello'.encode('utf-8'))
+        with open(r'g.txt',mode='r',encoding='utf-8') as f:
+            for line in f:
+                print(line)
+        with open(r'test.jpg',mode='rb') as f:
+            while True:
+                res=f.read(1024)
+                if len(res)==0:
+                    break
+                print(len(res))
+1.打开文件
+    open(r'c:\a\b\c\d.txt')
+    f=open('c:/a/b/c/d.txt') #f的值是一种变量占用的是应用
+                             程序的内存空间
+2.操作文件:读/写文件，应用程序对文件的读写请求都是在向操作系统发送
+ 系统调用，然后由操作系统控制硬盘把输入读入内存、或者写入硬盘
+3.关闭文件
+f.close()
+4.编写文本文件copy程序
+    with open(r'源文件'，mode='rt',encoding='utf-8') as f1,\
+        open(r'目标文件'，mode='wt'，encoding='utf-8') as f2
+        data=f1.read()
+        f2.write(data)
+5常用方法
+    readline()读一行
+    readlines()
+    强调：
+    f.read()与f.readlines()都是将内容一次性读入内存，如果内容过大会导致内存溢出，
+    若还想将内容全读入内存，则必须分多次读入，有两种实现方式：
+    writelines():
+    补充一：如果是纯英文字符，可以直接加前缀b得到bytes类型
+    补充二：
+    '上'.encode('utf-8)==bytes('上',encoding='utf-8')
+    flush:强行写操作（写入硬盘）
+    f.tell()获取文件指针当前的位置
+控制文件指针操作
+指针移动的单位都是以bytes/字节为单位
+只有一种情况特殊：
+    t模式下的read(n)，n代表的是字符个数
+f.seek(n,mode)：n指的是移动的字节个数
+模式：
+0：参照物是文件开头位置
+1：参照物是当前指针所在位置
+2：参照物是文件末尾位置，应该倒着移动
+强调只有0模式可以在t下使用，1,2必须在b模式下使用
+with open('access.log',mode='rt',encoding='utf-8') as f
+    f.seek(0,2)
+    while True:
+        line=f.readline()
+        if len(line)==0:
+            time.sleep(0.3)
+        else:
+            print(line)
+方式一：文本编辑采用的就是这种方式
+with open('c.txt',mode='rt',encoding='utf-8') as f:
+    res=f.read()
+    data=res.replace('alex','dsb')
+    print(data)
 
+with open('c.txt',mode='wt',encoding='utf-8') as f1:
+    f1.write(data)
 
+方式二：
+with open('c.txt',mode='rt',encoding='utf-8') as f,\
+    open('.c.txt.swap',mode='wt',encoding='utf-8') as f1:
+    for line in f:
+        f1.write(line.replace('alex','dsb'))
+os.remove('c.txt')
+os.rename('.c.txt.swap','c.txt')
+
+P186
 
 1、什么是内置方法
 定义在类内部，以__开头并以__结尾的方法
