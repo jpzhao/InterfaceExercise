@@ -823,8 +823,21 @@ print(x)
     装饰器就是在不修改被装饰器对象源代码以及调用方式的前提下为被装饰对象添加新功能
 3如何用
 
-P228
+语法糖
+在被装饰对象正上方的单独一行写@装饰器名字
+总结
+def outter(func):
+    def wrapper(*args,**kwargs):
+        #1.调用原函数
+        #2.为其增加新功能
+        res=func(*args,**kwargs)
+        return res
+    return wrapper
+@outter
+def index():
+    print('from index')
 
+P235
 
 1、什么是内置方法
 定义在类内部，以__开头并以__结尾的方法
