@@ -837,7 +837,24 @@ def outter(func):
 def index():
     print('from index')
 
-P235
+偷梁换柱，即将原函数名指向的内存地址偷梁换柱成wrapper函数
+所以应该将wrapper做的跟原函数一样才行
+
+from functools import wraps
+def outter(func):
+    @wraps(func)
+    def wrapper(*args,**kwargs):
+        #1.调用原函数
+        #2.为其增加新功能
+        res=func(*args,**kwargs)
+        return res
+    return wrapper
+@outter
+def index():
+    print('from index')
+
+226
+
 
 1、什么是内置方法
 定义在类内部，以__开头并以__结尾的方法
