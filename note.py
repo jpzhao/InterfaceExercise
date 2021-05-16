@@ -866,8 +866,38 @@ def deco(x,y,z):
 def index():
     pass
 
+叠加多个装饰器加载，运行分析
+def deco1(func)  #func1=wrapper2的内存地址
+    def wrapper1(*args,**kwargs)
+        print('正在运行===》deco1.wrapper1')
+        res1=func1(*args,**kwargs)
+        return res1
+    return wrapper1
+def deco2(func)   #func2=wrapper3的内存地址
+    def wrapper2(*args,**kwargs)
+        print('正在运行===》deco2.wrapper2')
+        res2=func2(*args,**kwargs)
+        return res2
+    return wrapper2
+def deco3(x)
+    def outter3(func3) #func3=被装饰对象index函数的内存地址
+        def wrapper3(*args,**kwargs)
+            print('正在运行===》deco3.outter3.wrapper3')
+            res3=func3(*args,**kwargs)
+            return res3
+        return wrapper3
+    return output3
+#加载顺序自下而上
+@deco1     #index=deco1(wrapper2的内存地址)==>wrapper1的内存地址
+@deco2     #index=deco2(wrapper3的内存地址)==>wrapper2的内存地址
+@deco3(11) #===》@outter3==>index=outter3(index)==>index=wrapper3的内存地址
+def index(x,y):
+    print('from index %s:%s'%(x,y))
+#执行顺序自上而下
+index(x,y) #wrapper1(1,2)
+
 /*******迭代器*********/
-1.什么是迭代器
+1.什么是迭代器(iterator)
     迭代器指的是迭代取值的工具，迭代是一个重复的过程，每次重复
     都是基于上一次的结果而继续的，单纯的重复并不是迭代
 2.为何要有迭代器
@@ -913,13 +943,154 @@ d={'a':1,'b':2,'c':3}
 1.d.__iter__()得到一个迭代器对象
 2.迭代器对象.__next__()拿到一个返回值，然后将该返回值赋值给k
 3.循环往复步骤2，直到抛出StopIteration异常for循环会捕捉异常然后结束循环
-for k in d:
+for k in d(可迭代对象):可迭代对象.__iter__()=>迭代器对象-》x=next(迭代器对象)
     print(k)
 迭代器对象一定是可迭代对象，可迭代对象不一定是迭代器对象
 可迭代对象：字符串，列表，元组，字典，集合，文件对象
 迭代器对象：文件对象
 
-P241
+list('hello')#原理同for循环
+迭代器优缺点总结
+优点：
+    迭代取值统一方案，有索引类型，没有索引的类型
+    节省内存，迭代器就是一个功能，
+缺点：
+    无法按索引取值
+    一次性取值，再取需要在调用一次迭代器
+
+/*******生成器*********/
+生成器(generator)就是自定义的迭代器
+在函数内一旦存在yield关键字，调用函数并不会执行函数体代码
+会返回一个生成器对象，生成器即自定义的迭代器
+g.__next__()
+会触发函数体代码的运行，然后遇到yield停下来，将yield后的值
+当做本次调用的结果返回
+
+小知识点：
+len('aaa') #'aaa'.__len__()
+next(g) #g.__next__()
+
+def func():
+    print('run')
+    yield 1
+g=func()
+res1=next(g)
+有了yield关键字，就有了一种自定义迭代器的实现方式，yield可以用于返回值，但不同于return，
+函数一旦遇到return就结束了，而yield可以保存函数的运行状态挂起函数，用来返回多次值
+
+def dog(name):
+    food_list=[]
+    print('道哥%s准备东西啦...'%name)
+    while True:
+        #x拿到的是yield接收到的值
+        x=yield food_list #x='肉包子' x=yield #赋值  yield food_list #返回值
+        print('道哥%s吃了%s'%(name,x))
+        food_list.append(x)
+g=dog('xxx')
+g.send(None) #等同于next(g)
+g.send('一根骨头')
+g.send('肉包子')
+
+/*******三元表达式*********/
+语法格式：条件成立时要返回的值 if 条件 else 条件不成立时要返回的值
+
+/*******列表生成式*********/
+语法格式：
+[expression for item1 in iterable1 if condition1
+for item2 in iterable2 if condition2
+...
+for itemN in iterableN if conditionN]
+1、列表生成式
+l=['a_dsb','b_dsb','c_dsb','abc']
+new_l=[]
+for name in l:
+    if name.endswith('dsb'):
+        new_l.append(name)
+new_l=[name for name in l if name.endswith('dsb')]
+
+2、字典生成式
+items=[('name','egon'),('age',18),('gender','male')]
+res={k:v for k,v in items if k!='gender'}
+
+3、集合生成式
+keys=['name','age','gender']
+set1={key for key in keys}
+
+4、生成器表达式
+g=(i for i in range(10) if i>3)
+with open('c.txt',mode='rt',encoding='utf-8') as f
+    #生成器表达式简写
+    res=sum(len(line) for line in f)
+
+/*******函数递归*********/
+函数的递归调用：是函数嵌套调用的一种特殊形式
+具体是指：
+    在调用一个函数的过程中又直接或者间接地调用到本身
+查看默认递归数
+import sys
+sys.getrecursionlimit()
+
+直接调用本身
+def f1()
+    print('me')
+    f1()
+f1()
+间接调用本身
+def f1():
+    print('===>f1')
+    f2()
+def f2()
+    print('===>f2')
+    f1()
+f1()
+
+一段代码的循环运行的方案有两种
+方式一：while,for(场景:用于取值更多)循环
+方式二：递归的本质就是循环
+
+二：需要强调的一点是：
+递归调用不应该无限地调用下去，必须在满足某种条件下结束递归调用
+n=0
+while n<10:
+    print(n)
+    n+=1
+等同
+def func(n)
+    if n==10:
+        :return
+    print(n)
+    n+=1
+    f1(n)
+func(0)
+
+三：递归的两个阶段
+回溯：一层一层调用下去
+递推：满足某种结束条件，结束递归调用，然后一层一层返回
+age(5)=age(4)+10
+age(4)=age(3)+10
+age(3)=age(2)+10
+age(2)=age(1)+10
+age(1)=18
+def age(n):
+    if n==1:
+        return 18
+    return age(n-1)+10
+res=age(5)
+
+四：递归的应用
+def f1(list1):
+    for x in list1:
+        if type(x) is list:
+            #如果是列表，应该再循环
+            f1(x)
+        else:
+            print(x)
+f1(l)
+
+P258
+
+
+
 
 1、什么是内置方法
 定义在类内部，以__开头并以__结尾的方法
