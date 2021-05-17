@@ -1087,9 +1087,54 @@ def f1(list1):
             print(x)
 f1(l)
 
-P258
+/*******算法*********/
+算法：是高效解决问题的办法
+算法之二分法
+l=[-3,4,7,10,13,21,33,43,89,97]
+find_num=4
+def binary_search(find_num,l):
+    print(l)
+    if len(l)==0:
+        print('找的值不存在')
+        return
+    mid_index=len(l)//2
+    if find_num>l[mid_index]:
+        l=l[mid_index+1:]
+        binary_search(find_num,l)
+    elif find_num<l[mid_index]:
+        l=l[:mid_index]
+        binary_search(find_num,l)
+    else:
+        print('find it')
+binary_search(find_num)
+
+/*******编程思想*********/
+编程思想/范式
+面向过程的编程思想：
+核心是“过程”二字，过程即流程，指的事做事的步骤：先什么，再什么，后干什么
+基于该思想编写程序就好比设计一条流水线
+有点：复杂的问题流程化，进而简单化
+缺点：扩展性非常差
+面向过程的编程思想应用场景解析：
+不是所有的软件都需要频繁更迭，比如编写脚本
+即便是一个软件需要频繁更迭，也不并不代表这个软件所有的组成部分都需要一起更迭
+
+/*******匿名函数*********/
+1.def用于定义有名函数
+func=函数的内存地址
+def func(x,y):
+    return x+y
+print(func)
+2.lamdab用于定义匿名函数
+print(lambda x,y:x+y)
+3.调用匿名函数
+方式一：
+res=(lambda x,y:x+y)(1,2)
+print(res)
+4.匿名用于临时调用一次的场景：更多的是将匿名与其他函数配合使用
 
 
+P264
 
 
 1、什么是内置方法
