@@ -30,3 +30,14 @@ def factorialtest(n):
     res=n*factorialtest(n-1)
     return res
 
+def salary(n):
+    print(n)
+    if n==1:
+        print(5000)
+        return 5000
+    res=salary(n-1)+1000
+    print(res)
+    return res
+res=salary(4)
+# print(res)
+

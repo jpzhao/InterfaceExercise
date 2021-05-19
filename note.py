@@ -1096,14 +1096,14 @@ def binary_search(find_num,l):
     print(l)
     if len(l)==0:
         print('找的值不存在')
-        return
+        return False
     mid_index=len(l)//2
     if find_num>l[mid_index]:
         l=l[mid_index+1:]
-        binary_search(find_num,l)
+        return binary_search(find_num,l)
     elif find_num<l[mid_index]:
         l=l[:mid_index]
-        binary_search(find_num,l)
+        return binary_search(find_num,l)
     else:
         print('find it')
 binary_search(find_num)
@@ -1197,7 +1197,19 @@ import .... as ....
 def func():
     import time
 
-P270
+/*******一个python文件两种用途*********/
+被当做程序运行
+被当做模块导入
+*只要名称空间的名字还在被引用，就不会被回收
+1.运行run.py，启动虚拟机，创建全局名称空间
+2.import foo创建模块foo的名称空间
+3.run.py文件中的foo属性指向模块foo的名称空间
+
+/*******__name__*********/
+1.当foo.py被运行时，__name__的值为'__main__'
+2.当foo.py被当做模块导入时，__name__的值为'foo'
+
+P274
 
 
 
