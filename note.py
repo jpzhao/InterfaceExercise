@@ -1209,8 +1209,31 @@ def func():
 1.当foo.py被运行时，__name__的值为'__main__'
 2.当foo.py被当做模块导入时，__name__的值为'foo'
 
-P274
+#import导入模块在使用时必须加前缀“模块.”
+优点 肯定不会与当前名称空间中的名字冲突
+缺点 加前缀显得麻烦
 
+函数的名称空间与作用域关系是以定义阶段为准，与位置无关
+
+from...import...导入也发生了三件事
+1产生一个模块的名称空间
+2运行foo.py将运行过程中产生的名字都丢到模块的名称空间去
+3在当前名称空拿到一个名字，该名字与模块名称空间中的某一个内存地址
+from foo import x
+from foo import get
+
+from...import...导入模块在使用时不用加前缀
+优点：代码更精简
+缺点：容易与当前名称空间混淆
+
+一行导入多个名字（不推荐）
+#from foo import x;get;change
+#*:导入模块中的所有名字
+from foo import *
+__all__=['x',]#控制*代表的名字有哪些
+from foo import get as g起别名
+
+P276
 
 
 
