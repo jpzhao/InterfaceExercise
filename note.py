@@ -1233,7 +1233,266 @@ from foo import *
 __all__=['x',]#控制*代表的名字有哪些
 from foo import get as g起别名
 
-P276
+无论是import还是from...import在导入模块时都涉及查找
+优先级：
+1内存（内置模块）
+2按照sys.path中存放的文件的顺序依次查找要导入的模块
+
+import sys
+值为一个列表，存放了一系列的文件夹
+其中第一个文件夹是当前执行文件所在的文件夹
+print(sys.path)
+了解：sys.modules查看已经加载到内存中的模块
+print(sys.modules)
+import sys
+import foo #foo=模块的内存地址
+print('foo' in sys.modules)
+
+import sys
+#找foo.py就把foo.py的文件夹添加到环境变量中
+sys.path.append(r'/user/xxx/xxx')
+
+函数的类型提示
+def register(name:str,age:int,hobbbies:tuple)->int:#'返回的是整型int':
+    print(name)
+    print(age)
+    print(hobbbies)
+    return 111
+# 查看提示信息功能
+print(register.__annotations__)
+# {'name': '必须传入字符串', 'age': 111, 'hobbies': '必须传入元组', 'return': '返回的是整型int'}
+
+1.包就是一个包含有__init__.py文件的文件夹
+2.为何要有包
+    包的本质就是模块的模块的一种形式，包是用来被当做模块导入
+
+1产生一个名称空间
+2运行包下的__init__.py文件，将运行过程中产生的名字都丢到1的名称空间中
+3在当前执行文件的名称的空间中拿到一个名字mmm，mmm指向1的名称空间
+import mmm
+#绝对导入，以包的文件夹作为起始来进行导入
+from m1 import f1
+环境变量是以执行文件为准备的，所有的被导入的模块或者说后续的其它文件引用
+的sys.path都是参照执行文件的sys.path
+
+强调
+1.关于包相关的导入语句也分为import和from ... import ...两种，但是无论哪种，
+无论在什么位置，在导入时都必须遵循一个原则：凡是在导入时带点的，点的左边都必须是
+一个包，否则非法。可以带有一连串的点，如import 顶级包.子包.子模块,但都必须遵循这个原则。但对于导入后，
+在使用时就没有这种限制了，点的左边可以是包,模块，函数，类(它们都可以用点的方式调用自己的属性)。
+from a.b.c.d.e.f import xxx
+import a.b.c.d.e.f
+其中a、b、c、d、e都必须是包
+2、包A和包B下有同名模块也不会冲突，如A.a与B.a来自俩个命名空间
+3、import导入文件时，产生名称空间中的名字来源于文件，import 包，产生的名称空间的名字同样来源于文件，
+即包下的__init__.py，导入包本质就是在导入该文件
+
+相对导入：仅限于包内使用，不能跨出包（包内模块之间的导入，推荐使用相对导入）
+.:代表当前文件夹
+..:代表上一层文件夹
+import...
+强调：相对导入不能跨出包，所以相对导入仅限于包内模块彼此之间闹着玩
+而绝对导入时没有任何限制的，所以绝对导入是一种通用的导入方式
+
+优化方案：
+import os
+print(__file__)#当前文件的绝对路径
+BASE_DIR=os.path.dirname(os.path.dirname(__file__))
+
+from pathlib import Path
+root=Path(__file__)
+res=root.parent.parent /r'\bbb\aaa\ccc'
+print(res)
+print(res.resolve())
+
+/*******time*********/
+一.time
+import time
+时间分为三种格式：
+1.时间戳：从1970年到现在经过的秒数
+    作用：用于时间间隔的计算
+print(time.time())
+2.按照某种格式显示的时间：2020-03-30 11:11:11
+    作用：用于展示时间
+print(time.strftime('%Y-%m-%d %H:%M:%s %P'))
+print(time.strftime('%Y-%m-%d %X'))
+3.结构化的时间
+    作用：用于单独获取时间的某一部分
+res=time.localtime()
+print(res.tm_year)
+
+二.datatime
+import datatime
+print(datetime.datetime.now())
+print(datetime.datetime.now()+datetime.timedelta(days=3))
+
+时间模块需要掌握的操作
+1.时间格式的转换
+struct_time->时间戳
+import time
+s_time=time.localtime()
+print(time.mktime(s_time))
+
+时间戳-》struct_time
+tp_timetime.time()
+print(time.localtime(tp_time))
+print(time.localtime())  #当前时间
+print(time.gmtime())     #世界标准时间
+
+struct_time->格式化的字符串形式的时间
+s_time=time.localtime()
+time.strftime('%Y-%m-%d %H:%M:%S',s_time)
+
+time.strptime('1988-03-03 11:11:11','%Y-%m-%d %H:%M:%S')
+
+真正需要掌握的只有一条：format string<--->timestamp
+需求：'1988-03-03 11:11:11'+7 加7天
+timestamp 时间戳
+struct_time 结构化时间
+format string 字符串时间
+format string--->struct_time--->timestamp
+struct_time=time.strptime('1988-03-03 11:11:11','%Y-%m-%d %H:%M:%S')
+timestamp=time.mktime(struct_time)+7*86400(一天的秒数)
+
+format string<---struct_time<---timestamp
+time.strftime('%Y-%m-%d %X',time.localtime(timestamp))
+
+time.sleep(3)
+了解知识
+time.asctime()
+datetime.datetime.now()
+datetime.datetime.utcnow()
+datetime.datetime.fromtimestamp(3333)
+
+/*******random*********/
+import random
+print(random.random())#(0,1)----float    大于0且小于1之间的小数
+print(random.randint(1,3))  #[1,3]    大于等于1且小于等于3之间的整数
+print(random.randrange(1,3)) #[1,3)    大于等于1且小于3之间的整数
+print(random.choice([1,'23',[4,5]]))#1或者23或者[4,5]
+print(random.sample([1,'23',[4,5]],2))#列表元素任意2个组合
+print(random.uniform(1,3))#大于1小于3的小数，如1.927109612082716
+item=[1,3,5,7,9]
+random.shuffle(item) #打乱item的顺序,相当于"洗牌"
+print(item)
+
+import random
+for i range(6):
+    s1=chr(random.randint(65,90))
+    s2=str(random.randint(0,9))
+    res+=random.choice([s1,s2])
+
+/*******os*********/
+os.getcwd() 获取当前工作目录，即当前python脚本工作的目录路径
+os.chdir("dirname")  改变当前脚本工作目录；相当于shell下cd
+os.curdir  返回当前目录: ('.')
+os.pardir  获取当前目录的父目录字符串名：('..')
+os.makedirs('dirname1/dirname2')    可生成多层递归目录
+os.removedirs('dirname1')    若目录为空，则删除，并递归到上一级目录，如若也为空，则删除，依此类推
+os.mkdir('dirname')    生成单级目录；相当于shell中mkdir dirname
+os.rmdir('dirname')    删除单级空目录，若目录不为空则无法删除，报错；相当于shell中rmdir dirname
+os.listdir('dirname')    列出指定目录下的所有文件和子目录，包括隐藏文件，并以列表方式打印
+os.remove()  删除一个文件
+os.rename("oldname","newname")  重命名文件/目录
+os.stat('path/filename')  获取文件/目录信息
+os.sep    输出操作系统特定的路径分隔符，win下为"\\",Linux下为"/"
+os.linesep    输出当前平台使用的行终止符，win下为"\t\n",Linux下为"\n"
+os.pathsep    输出用于分割文件路径的字符串 win下为;,Linux下为:
+os.name    输出字符串指示当前使用平台。win->'nt'; Linux->'posix'
+os.system("bash command")  运行shell命令，直接显示
+os.environ  获取系统环境变量
+os.path.abspath(path)  返回path规范化的绝对路径
+os.path.split(path)  将path分割成目录和文件名二元组返回
+os.path.dirname(path)  返回path的目录。其实就是os.path.split(path)的第一个元素
+os.path.basename(path)  返回path最后的文件名。如何path以／或\结尾，那么就会返回空值。即os.path.split(path)的第二个元素
+os.path.exists(path)  如果path存在，返回True；如果path不存在，返回False
+os.path.isabs(path)  如果path是绝对路径，返回True
+os.path.isfile(path)  如果path是一个存在的文件，返回True。否则返回False
+os.path.isdir(path)  如果path是一个存在的目录，则返回True。否则返回False
+os.path.join(path1[, path2[, ...]])  将多个路径组合后返回，第一个绝对路径之前的参数将被忽略
+os.path.getatime(path)  返回path所指向的文件或者目录的最后存取时间
+os.path.getmtime(path)  返回path所指向的文件或者目录的最后修改时间
+os.path.getsize(path) 返回path的大小
+
+/*******sys*********/
+1 sys.argv           命令行参数List，第一个元素是程序本身路径
+2 sys.exit(n)        退出程序，正常退出时exit(0)
+3 sys.version        获取Python解释程序的版本信息
+4 sys.maxint         最大的Int值
+5 sys.path           返回模块的搜索路径，初始化时使用PYTHONPATH环境变量的值
+6 sys.platform       返回操作系统平台名称
+
+进度条
+import time
+res=''
+for i in range(1,61):
+    res+='#'
+    time.sleep(1)
+    res1=i/60
+    print('\r[%-60s] %d%%'% (res,res1*100),end='')
+
+/*******序列化*********/
+什么是序列化，反序列化
+    序列化指的是把内存的数据类型转换成一个特定的格式内容
+    该格式的内容可用于存储或者传输给其他平台使用
+    内存中的数据类型--->序列化---->特定的格式(json格式或者pickle格式)
+    内存中的数据类型<---反序列化<----特定的格式(json格式或者pickle格式)
+
+土方法：
+    {'aaa':111}--->序列化str({'aaa':111})---->"{'aaa':111}"
+    {'aaa':111}<---反序列化eval("{'aaa':111}")<----"{'aaa':111}"
+为何要序列化
+    序列化得到结果-》特定的格式的内容有两种用途
+    1.可用于存储-》用于存档
+    2.传输给其他平台使用-》跨平台数据交互
+        python   中间格式      java
+        列表     特定格式       数组
+    强调：
+    针对用途1的特定-格式：可是一种专用的格式=》pickle只有python可以识别
+    针对用途2的特定-格式：应该是一种通用，能够被所有语言识别的格式=》json
+    如何序列化和反序列化
+        序列化
+        import json
+        json_res=json.dumps([1,'aaa',True,False])
+        反序列化
+        l=json.loads(json_res)
+
+        import json
+        序列化的结果写入文件的复杂方法
+        json_res=json.dumps([1,'aaa',True,False])
+        with open('test.json',mode='wt',encoding='utf-8') as f:
+            f.write(json_res)
+        将序列化的结果写入文件的简单方法
+        with open('test.json',mode='wt',encoding='utf-8') as f:
+            json.dump([1,'aaa',True,False],f)
+
+        反序列化
+        从文件读取json格式的字符串进行反序列化操作的复杂方法
+        with open('test.json',mode='rt',encoding='utf-8') as f:
+            json_res=f.read()
+            l=json.loads(json_res)
+        从文件读取json格式的字符串进行反序列化操作的简单方法
+        with open('test.json',mode='rt',encoding='utf-8') as f:
+            ljson.load(f)
+
+json验证：json格式兼容的是所有语言通用的数据类型，不能识别某一语言的所有独有类型
+json.dumps({1,2,3,4,5})
+
+json强调：一定要搞清楚json格式，不要与python混淆
+l=json.loads('[1,"aaa",true,false]')
+
+# 在python解释器2.7与3.6之后都可以json.loads(bytes类型)，但唯独3.5不可以
+import json
+json.loads(b'{"a":111}')
+with open('test.json',mode='rb') as f:
+    l=json.load(f)
+
+P306
+
+
+
+
+
 
 
 
