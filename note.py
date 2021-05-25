@@ -1496,9 +1496,29 @@ def monkey_patch_json():
     json.loads=ujson.loads
 monkey_patch_json() #在入口文件处运行
 
-P311
+/*******猴子补丁*********/
+1.什么是哈希hash
+    hash一类算法，该算法接受传入的内容，经过运算得到一串hash值
+    hash值的特定：
+    I只要传入的内容一样，得到的hash值必然一样=====>要用明文传输密码文件完整性校验
+    II不能由hash值返解成内容=======》把密码做成hash值，不应该在网络传输明文密码
+    III不管传入的内容有多大，只要使用的hash算法不变，无论校验的内容有多大，得到的hash值长度是固定的
+2.hash的用途
+    特点II用于密码密文传输与验证
+    特点I、III用于文件完整性校验
+3.如何用
+import hashlib
+m=hashlib.md5()
+m.update('hello'.encode('utf-8))
+res=m.hexdigest()
+用途2
+f=open('a.txt',mode='rb')
+f.seek()
+f.read(2000)
+m1.update(文件的一行)
+m1.hexdigest()
 
-
+P314
 
 
 
