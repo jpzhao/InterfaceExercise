@@ -1487,8 +1487,16 @@ json.loads(b'{"a":111}')
 with open('test.json',mode='rb') as f:
     l=json.load(f)
 
-P306
+/*******猴子补丁*********/
+在入口处打猴子补丁
+import json
+import ujson
+def monkey_patch_json():
+    json.dumps=ujson.dumps
+    json.loads=ujson.loads
+monkey_patch_json() #在入口文件处运行
 
+P311
 
 
 
