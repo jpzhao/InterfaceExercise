@@ -1607,7 +1607,8 @@ class Foo:
 /*******property*********/(类装饰器)
 装饰器是在不修改被装饰对象源代码以及调用方式的前提下为被装饰对象添加
 新功能的可调用对象
-class People():
+案例一：
+class People:
     def __init__(self,name,weight,height):
         self.name=name
         self.weight=weight
@@ -1620,9 +1621,81 @@ class People():
 obj1=People('egon',70,1.83)
 print(obj1.bmi)
 
-P360
+隐藏数据，开接口案例二：
+class People:
+    def __init__(self,name):
+        self.__name=name
 
+    def get_name(self):
+        return self.__name
 
+    def set_name(self,val):
+        if type(val) is not str:
+            print('必须传入str类型')
+            return
+        self.__name=val
+
+    def del_name(self):
+        print('不能删除')
+
+    name = property(get_name, set_name, del_name)
+
+案例三：
+class Car:
+    def __init__(self,name):
+        self.__name=name
+
+    @property
+    def name(self):
+        return self.__name
+
+    @name.setter
+    def name(self,val):
+        self.__name=val
+
+    @name.deleter
+    def name(self):
+        print('不能删除')
+
+/*******继承*********/
+1、什么是继承
+    I继承是一种创建新类的方式，在Python中，新建的类可以继承一个或多个父类，
+       新建的类可称为子类或派生类，父类又可称为基类或超类，子类会遗传父类的属性
+    II需要注意的是：python支持多继承
+       在Python中，新建的类可以继承一个或多个父类
+class Parent1:
+    pass
+class Parent2:
+    pass
+class Sub1(Parent1): #单继承
+    pass
+class Sub2(Parent1,Parent2): #多继承
+    pass
+
+ps1:在Python2中有经典类与新式类之分
+新式类：继承了object类的子类，以及该子类的子类子子类
+    class Bar(object):
+        pass
+    Bar.__base__
+经典类：没有继承object类的子类，以及该子类的子类子子类
+    class Foo:
+        pass
+    Foo.__base__
+
+ps2:在Python3中没有继承任何类，那么会默认继承object类，所以python3中
+所有的类都是新式类
+
+III:python的多继承
+    优点：子类可以同时遗传多个父类的属性，最大限度地重用代码
+    确点：
+        1、违背人的思维习惯，继承表达的是一种什么"是"什么的关系
+        2、代码可读性会变差
+        3、不建议使用多继承，有可能会引发可恶的菱形问题，扩展性变差，如果真的涉及到一个子类不可避免地
+        要重用多个父类的属性，应该使用Mixins
+
+2、为何要用继承：用来解决类与类之间代码冗余问题
+
+P363
 
 1、什么是内置方法
 定义在类内部，以__开头并以__结尾的方法
