@@ -1708,8 +1708,110 @@ python会在MRO列表上从左到右开始查找基类,直到找到第一个匹�
 
 总结：类相关的属性查找(类名.属性，该类的对象.属性)，都是参照该类的mro
 
-P365
+如果多继承是非菱形继承，经典类与新式类的属性查找顺序一样
+都是一个分支一个分支地找下去，然后最后找object
+class E:
+    def test(self):
+        print('from E')
 
+
+class F:
+    def test(self):
+        print('from F')
+
+
+class B(E):
+    def test(self):
+        print('from B')
+
+
+class C(F):
+    def test(self):
+        print('from C')
+
+
+class D:
+    def test(self):
+        print('from D')
+
+
+class A(B, C, D):
+    # def test(self):
+    #     print('from A')
+    pass
+
+
+print(A.mro())
+'''
+[<class '__main__.A'>, <class '__main__.B'>, <class '__main__.E'>, <class '__main__.C'>, <class '__main__.F'>, <class '__main__.D'>, <class 'object'>]
+'''
+
+obj = A()
+obj.test()
+
+如果多继承是菱形继承，经典类与新式类的属性查找顺序不一样
+经典类：深度优先，会在检索第一条分支的时候就直接一条道走到黑，即会检索大脑袋（共同的父类）
+新式类：广度优先，会在检索最后一条分支的时候检索大脑袋
+class G(object):
+    def test(self):
+        print('from G')
+
+class E(G):
+    def test(self):
+        print('from E')
+
+class F(G):
+    def test(self):
+        print('from F')
+
+class B(E):
+    def test(self):
+        print('from B')
+
+class C(F):
+    def test(self):
+        print('from C')
+
+class D(G):
+    def test(self):
+        print('from D')
+
+class A(B,C,D):
+    # def test(self):
+    #     print('from A')
+    pass
+
+obj = A()
+obj.test() # 如上图，查找顺序为:obj->A->B->E->C->F->D->G->object
+# 可依次注释上述类中的方法test来进行验证
+总结：
+多继承到底要不要用
+要用，但是规避几点问题
+1.继承结构尽量不要过于复杂
+2.要在多继承的背景下满足继承的什么“是”什么的关系=》mixins
+
+/*******mixins机制*********/
+多继承的正确打开方式：mixins机制(多继承下的一种规范)
+mixins机制核心：就是在多继承背景下尽可能地提升多继承的可读性
+ps:让多继承满足人的思维习惯=》什么“是”什么（CivilAircraft是Vehicle）
+
+class Vehicle:  # 交通工具
+    def fly(self):
+        '''
+        飞行功能相应的代码
+        '''
+        print("I am flying")
+class FlyableMixin: #(Mixin:混合)
+    def fly(self):
+        pass
+class CivilAircraft(FlyableMixin,Vehicle):  # 民航飞机
+    pass
+class Helicopter(FlyableMixin,Vehicle):  # 直升飞机
+    pass
+class Car(Vehicle):  # 汽车并不会飞，但按照上述继承关系，汽车也能飞了
+    pass
+
+P368
 
 
 
