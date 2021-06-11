@@ -1658,6 +1658,7 @@ class Car:
         print('不能删除')
 
 /*******继承*********/
+继承是耦合思想的体现
 1、什么是继承
     I继承是一种创建新类的方式，在Python中，新建的类可以继承一个或多个父类，
        新建的类可称为子类或派生类，父类又可称为基类或超类，子类会遗传父类的属性
@@ -1849,7 +1850,7 @@ class Teacher(OldboyPeople):
 tea_obj=Teacher('egon',18,'male',10,3000)
 print(tea_obj.__dict__)
 
-1.什么是多态：指的是同一事物多种形态
+1.什么是多态：指的是同一事物多种形态（多态代表方法len()）
 class Animal:
     pass
 
@@ -1860,10 +1861,45 @@ class Dog(Animal):
     pass
 2.为何要有多态=》多态会带来什么样的特性，多态性
 多态性指的是可以在不考虑对象具体类型的情况下而直接使用对象
-P371
 
+def my_len(val):
+    return val.__len__()
 
+python推崇的是鸭子类型
+抽象基类
+import abc
+class Animal(metaclass=abc.ABCMeta): #统一所有子类的标准
+    @abc.abstractmethod
+    def say(self):
+        pass
 
+一：绑定方法：特殊之处在于将调用者本身当做第一个参数自动传入
+    1.绑定给对象的方法：调用者是对象，自动传入的是对象
+    2.绑定定给类的方法：调用者类，自动传入的是类
+    提供一种新的造对象的方式
+class Mysql:
+    def __init__(self,ip,port):
+        self.ip=ip
+        self.port=port
+
+    def func(self):
+        print('%s:%s'%(self.ip,self.port))
+
+    @classmethod  #将下面的函数装饰成绑定给类的方法
+    def from_conf(xxx):
+        return xxx(settings.IP,settings.PORT)
+
+二：非绑定方法：静态方法
+    没有绑定给任何人：调用者可以是类、对象、没有自动传参的效果
+class Mysql:
+    def __init__(self,ip,port):
+        self.ip=ip
+        self.port=port
+
+    @staticmethod #将下述函数装饰成一个静态方法
+    def create_id():
+        import uuid
+        return uuid.uuid4()
 
 
 1、什么是内置方法
