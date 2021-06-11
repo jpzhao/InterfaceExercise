@@ -1811,7 +1811,56 @@ class Helicopter(FlyableMixin,Vehicle):  # 直升飞机
 class Car(Vehicle):  # 汽车并不会飞，但按照上述继承关系，汽车也能飞了
     pass
 
-P368
+在子类派生的新方法中如何重用父类的功能
+方式一：指名道姓调用某一个类下的函数=》不依赖于继承关系
+class OldbodPeople:
+    def __init__(self,name,age,sex):
+        self.name=name
+        self.age=age
+        self.sex=sex
+    def f1(self):
+        print('%s say hello'%self.name)
+
+class Teacher(OldboyPeople):
+    def __init__(self.name,age,sex,level,salary):
+        OldboyPeople.__init__(self,name,age,sex)
+        self.level=level
+        self.salary=salary
+tea_obj=Teacher('egon',18,'male',10,3000)
+print(tea_obj.__dict__)
+
+方式二：super()调用父类提供给自己的方法=》严格依赖继承关系
+调用super()会得到一个特殊的对象，该对象会参照发起属性查找的那个类的mro，去
+当前类的父类中找属性
+class OldbodPeople:
+    def __init__(self,name,age,sex):
+        self.name=name
+        self.age=age
+        self.sex=sex
+    def f1(self):
+        print('%s say hello'%self.name)
+
+class Teacher(OldboyPeople):
+    def __init__(self.name,age,sex,level,salary):
+        super(Teacher,self).__init__(self,name,age,sex) #python2
+        super().__init__(self,name,age,sex) #python3 调用的是方法，自动传入对象
+        self.level=level
+        self.salary=salary
+tea_obj=Teacher('egon',18,'male',10,3000)
+print(tea_obj.__dict__)
+
+1.什么是多态：指的是同一事物多种形态
+class Animal:
+    pass
+
+class People(Animal):
+    pass
+
+class Dog(Animal):
+    pass
+2.为何要有多态=》多态会带来什么样的特性，多态性
+多态性指的是可以在不考虑对象具体类型的情况下而直接使用对象
+P371
 
 
 
