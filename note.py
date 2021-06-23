@@ -1900,11 +1900,82 @@ class Mysql:
     def create_id():
         import uuid
         return uuid.uuid4()
+掌握
+dir()
+for i,v in enumerate(['a','b','c'])
+    print(i,v)
+res=eval('1+2') #执行字符串中的表达式
+print(res)
+isinstance() #判断一个对象是否是类的实例
+zip() 将两个迭代对象拼接在一起
+__import__
+t=__import__('time')
+t.sleep(3)
 
+/*******反射*********/
+反射：指的是在程序运行过程中可以“动态”获取对象的信息(数据属性，函数属性)
+python是动态语言，而反射(reflection)机制被视为动态语言的关键。
+反射机制指的是在程序的运行状态中
+对于任意一个类，都可以知道这个类的所有属性和方法；
+对于任意一个对象，都能够调用他的任意方法和属性。
+这种动态获取程序信息以及动态调用对象的功能称为反射机制。
 
+实现反射机制的步骤
+1先通过多dir：查看出某一个对象下可以.出哪些属性来
+2.可以通过字符串反射到真正的属性上，得到属性值
+print(obj.__dict__[dir(obj)[-2]])
+为何要用反射
+如何实现反射
+class People:
+    def __init__(self,name,age):
+        self.name=name
+        self.age=age
+
+四个内置函数的使用：通过字符串来操作属性值
+1.hasattr()
+print(hasattr(obj,'name'))
+print(hasattr(obj,'x'))
+
+2.getattr()
+print(getattr(obj,'name'))
+
+3.setattr()
+print(setattr(obj,'name','EGON'))
+
+4.delattr()
+delattr(obj,'name')
+
+/*******内置方法*********/
 1、什么是内置方法
 定义在类内部，以__开头并以__结尾的方法
 特点：会在某种情况下自动触发执行
 2、为何要用内置方法
 为了定制化我们的类or对象
+3、如何使用内置方法
+__str__
+class People:
+    def __init__(self,name,age):
+        self.name=name
+        self.age=age
+    def __str__(self):
+        return self.name
+
+__del__
+
+/*******元类*********/
+引入：一切都源自于一句话：一切皆为对象
+什么是元类
+class People:
+    def __init__(self,name,age):
+        self.name=name
+        self.age=age
+    def __str__(self):
+        return self.name
+如何得到对象
+obj=调用类()
+obj=People('egon',18)
+
+如果说类也是对象
+People=调用类
+
 """
