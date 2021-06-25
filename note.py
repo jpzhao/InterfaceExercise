@@ -1965,6 +1965,8 @@ __del__
 /*******元类*********/
 引入：一切都源自于一句话：一切皆为对象
 什么是元类
+元类就是用来实例化产生类的类
+关系：元类---实例化---》类(People)----实例化---》对象（obj)
 class People:
     def __init__(self,name,age):
         self.name=name
@@ -1977,5 +1979,52 @@ obj=People('egon',18)
 
 如果说类也是对象
 People=调用类
+查看内置的元类：我们用class关键字定义的所有的类以及内置的类
+都是由内置的元类type实例化产生的
 
+三：class关键字创造类People的步骤
+类有三大特征：
+1.类名
+class_name="People"
+2.类的基类
+class_bases=(object,)
+3.执行类体代码拿到类的名称空间
+class_dic={}
+class_body='''
+def __init__(self,name,age):
+    self.name=name
+    self.age=age
+def say(self):
+    print("testing")
+'''
+exec(class_body,{},class_dic)
+print(class_dic)
+4.调用元类
+People=type(class_name,class_bases,class_dic)
+
+四：如何自定义元类来控制类的产生
+class Mymeta(type):#只有继承了type类的类才是元类
+    def __init__(self,x,y,z)
+                #空对象，“People”,(object,),{...}
+        print('run...')
+        print(self)
+        print(x)#类名
+        print(y)#基类
+        print(z)#类体
+        if not x.iscapitalize():
+            raise NameError('类名首字母大写')
+People=Mymeta(class_name,class_bases,class_dic)
+调用Mymeta发生三件事
+1.先造一个空对象=》People
+2.调用Mymeta这个类内的__init__方法，完成初始化对象的操作
+3.返回初始化好的对象
+
+class People(metaclass=Mymeta):
+    def __init__(self,name,age):
+        self.name=name
+        self.age=age
+    def say(self):
+        print("hello")
+
+P404
 """
